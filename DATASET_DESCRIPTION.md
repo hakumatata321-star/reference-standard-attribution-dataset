@@ -8,13 +8,13 @@ The labels are the traceability links: which standard each instrument is calibra
 
 ## Release At A Glance
 
-- Raw files: 12
+- Raw files: 13
 - Laboratories (cases): 1,500, each with its own standards and instruments, so every laboratory is an independent unit
 - Reference standards: 7,444, 4 to 6 per laboratory
-- Instruments: 18,513, 8 to 18 per laboratory, 12.3 on average
+- Instruments: 18,513 (8, 10, 12, 15 or 18 per laboratory: the number of standards times the capacity), 12.3 on average
 - Capacity: each standard serves exactly 2 or 3 instruments, the same number throughout a laboratory, so every laboratory is fully subscribed
 - Certificates: 33,601, 3 to 6 per standard (4.5 on average), each the standard's value on one day with a small recording error
-- Calibration events: 64,619, 2 to 5 per instrument (3.4 on average)
+- Calibration events: 64,619, 2 to 5 per instrument (3.5 on average), drawn between day 20 and day 709
 - Check readings: 961,908, about 52 per instrument, one every 7 to 21 days
 - Observation window: days 0 to 729
 - Prepared split: 1,200 training laboratories, 300 test laboratories (every fifth laboratory in hashed-id order)
@@ -22,7 +22,7 @@ The labels are the traceability links: which standard each instrument is calibra
 
 ## Raw File Structure
 
-The uploaded ZIP is flat and contains exactly these twelve files at its root:
+The uploaded ZIP is flat and contains exactly these thirteen files at its root:
 
 - `labs.csv`: one record per laboratory: `case_id`, `n_instruments`, `n_standards`, `capacity`.
 - `standards.csv`: one record per reference standard: `case_id`, `standard_id`.
@@ -43,7 +43,7 @@ The uploaded ZIP is flat and contains exactly these twelve files at its root:
 Every draw and every identifier comes from HMAC-SHA256 keyed to a withheld 256-bit secret; the generator code and the secret are not released. Each laboratory is drawn independently.
 
 1. **Setup.** Draw 4 to 6 standards and a capacity of 2 or 3, giving the laboratory exactly capacity times the number of standards instruments. Assign instruments to standards so that every standard is filled to capacity.
-2. **Standards.** Each standard drifts as a random walk over 730 days with a step of 0.004, 0.008 or 0.015. It publishes a certificate on 3 to 6 randomly chosen days: its value on that day plus a recording error of about 0.004.
+2. **Standards.** Each standard drifts as a random walk over 730 days with a step of 0.004, 0.008 or 0.015. It publishes a certificate on 3 to 6 randomly chosen days between day 30 and day 699: its value on that day plus a recording error of about 0.004.
 3. **Instruments.** Each instrument has its own drift walk with a step of 0.003, 0.006 or 0.012, its own measurement noise of 0.01, 0.02 or 0.04, and 2 to 5 calibration days.
 4. **Calibration.** At each calibration day the instrument's offset is reset so that its level equals its standard's value on that day. The offset then holds until the next calibration while the instrument's own drift continues.
 5. **Observation.** Publish the check readings, every 7 to 21 days, each the instrument's own drift plus its current offset plus measurement noise. The standards' daily paths, the instruments' own drift walks, the offsets and the assignment all stay hidden.
